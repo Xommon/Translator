@@ -1,30 +1,49 @@
+import googletrans
 from googletrans import Translator
 import sys
 from tkinter import*
 
-# Create GUI
+# Create GUI object
 window = Tk()
 
-input_field = Entry(window, width=50)
-input_field.pack()
+# Import translator and languages
+translator = Translator()
+language_keys = list(googletrans.LANGUAGES.keys())
+languages = list(googletrans.LANGUAGES.values())
+#print(languages)
+
+# Create Field1
+selected1 = StringVar()
+selected1.set("english")
+dropdown1 = OptionMenu(window, selected1, *languages)
+dropdown1.pack(side=LEFT)
+entry1 = Entry(window, width=50)
+entry1.pack(side=LEFT)
+
+# Create Field2
+selected2 = StringVar()
+selected2.set("english")
+dropdown2 = OptionMenu(window, selected2, *languages)
+dropdown2.pack(side=LEFT)
+entry2 = Entry(window, width=50)
+entry2.pack(side=LEFT)
 
 def translate():
     # Translate the text
     try:
-        translator = Translator()
-        output_string = "Spanish: " + translator.translate(input_field.get(), dest='es').text
-        Label(window, text=output_string).pack()
-
-        # Languages
-        #print("Spanish:", translator.translate(input_text, dest='es').text)
-        #print("French:", translator.translate(input_text, dest='fr').text)
-        #print("Portuguese:", translator.translate(input_text, dest='pt').text)
-        #print("Italian:", translator.translate(input_text, dest='it').text)
+        entry2.delete(0, 'end')
+        entry2.insert(0, translator.translate(entry1.get(), src=language_keys[languages.index(selected1.get())], dest=language_keys[languages.index(selected2.get())]).text)
     except Exception as e:
-        print("An error occurred:", e)
+        print("FATAL ERROR:", e)
         sys.exit(1)
+
+def clear_text():
+    entry1.delete(0, 'end')
+    entry2.delete(0, 'end')
 
 translateButton = Button(window, text="Translate", command=translate)
 translateButton.pack()
+clearButton = Button(window, text="Clear", command=clear_text)
+clearButton.pack()
 
 window.mainloop()
