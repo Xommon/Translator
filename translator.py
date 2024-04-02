@@ -21,42 +21,12 @@ class Field:
         self.dropdown = dropdown
         self.entry = entry
 
-# Add field
-def add_entry():
-    dropdown = ttk.Combobox(window, value=languages)
-    dropdown.current(21)
-    dropdown.grid(row=len(fields), column=0)
-    entry = Entry(window, width=100)
-    entry.grid(row=len(fields), column=1)
-    newField = Field(dropdown, entry)
-    fields.append(newField)
-
 # Remove field
 def remove_entry():
-    if fields.len() > 0:
+    if len(fields) > 0:
         fields[len(fields)-1].dropdown.destroy()
         fields[len(fields)-1].entry.destroy()
-        fields[len(fields)-1].pop()
-
-# Create Field1
-#dropdown1 = ttk.Combobox(window, value=languages)
-#dropdown1.current(21)
-#dropdown1.grid(row=0, column=0)
-#entry1 = Entry(window, width=100)
-#entry1.grid(row=0, column=1)
-
-# Create Field2
-#dropdown2 = ttk.Combobox(window, value=languages)
-#dropdown2.current(21)
-#dropdown2.grid(row=1, column=0)
-#entry2 = Entry(window, width=100)
-#entry2.grid(row=1, column=1)
-        
-# Create the first two fields
-add_entry()
-add_entry()
-add_entry()
-add_entry()
+        fields.pop()
 
 # Translate the text
 def translate():
@@ -71,14 +41,36 @@ def translate():
                 print("FATAL ERROR:", e)
                 sys.exit(1)
         
-
+# Clear text
 def clear_text():
     for field in fields:
         field.entry.delete(0, 'end')
 
+# Translate and Clear buttons
 translateButton = Button(window, text="Translate", command=translate)
-translateButton.grid(row=len(fields), column=1)
 clearButton = Button(window, text="Clear", command=clear_text)
-clearButton.grid(row=len(fields), column=2)
+
+def reposition_buttons():
+    translateButton.grid(row=len(fields)+1, column=1)
+    clearButton.grid(row=len(fields)+1, column=2)
+
+# Add field
+def add_entry():
+    dropdown = ttk.Combobox(window, value=languages)
+    dropdown.current(21)
+    dropdown.grid(row=len(fields), column=0)
+    entry = Entry(window, width=100)
+    entry.grid(row=len(fields), column=1)
+    newField = Field(dropdown, entry)
+    addButton.grid(row=len(fields)+1, column=0)
+    minusButton.grid(row=len(fields)+1, column=1)
+    fields.append(newField)
+    reposition_buttons()
+addButton = Button(window, text="+", command=add_entry)
+minusButton = Button(window, text="-", command=remove_entry)
+
+# Create the first two fields
+add_entry()
+add_entry()
 
 window.mainloop()
